@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import CacheEntry
 from datetime import datetime
+from auth import get_current_user_or_api_key
 
 router = APIRouter()
 
@@ -10,7 +11,8 @@ router = APIRouter()
 @router.get("/status")
 async def cache_status(
     path: str = Query(..., description="CDN path to check"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Check cache status für eine bestimmte Datei
@@ -42,7 +44,8 @@ async def cache_status(
 async def list_cached_files(
     limit: int = 100,
     offset: int = 0,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Liste aller gecachten Dateien
@@ -76,7 +79,8 @@ async def list_cached_files(
 async def update_cache_entry(
     path: str,
     cache_status: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Update cache entry (called by NGINX logs parser or webhook)

@@ -2,12 +2,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from services import minio_client
+from auth import require_admin
 
 router = APIRouter()
 
 
 @router.get("/buckets")
-async def list_buckets():
+async def list_buckets(
+    admin = Depends(require_admin)
+):
     """
     Liste aller MinIO Buckets
     """
@@ -27,7 +30,10 @@ async def list_buckets():
 
 
 @router.post("/buckets")
-async def create_bucket(name: str):
+async def create_bucket(
+    name: str,
+    admin = Depends(require_admin)
+):
     """
     Erstelle neuen Bucket
     """
@@ -62,7 +68,10 @@ async def create_bucket(name: str):
 
 
 @router.post("/buckets/{name}/public")
-async def make_bucket_public(name: str):
+async def make_bucket_public(
+    name: str,
+    admin = Depends(require_admin)
+):
     """
     Setze Bucket auf Public Read
     """
@@ -95,7 +104,10 @@ async def make_bucket_public(name: str):
 
 
 @router.get("/system-info")
-async def system_info(db: Session = Depends(get_db)):
+async def system_info(
+    db: Session = Depends(get_db),
+    admin = Depends(require_admin)
+):
     """
     System Informationen
     """

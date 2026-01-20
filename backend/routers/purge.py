@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import CachePurgeLog, CacheEntry
 from config import settings
+from auth import get_current_user_or_api_key
 import os
 import shutil
 from datetime import datetime
@@ -62,7 +63,8 @@ def purge_nginx_cache_by_pattern(pattern: str = None, full: bool = False) -> dic
 @router.delete("/purge")
 async def purge_single_file(
     path: str = Query(..., description="CDN path to purge (e.g., /media/image.jpg)"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Purge einzelne Datei aus dem Cache
@@ -106,7 +108,8 @@ async def purge_single_file(
 @router.delete("/purge/bucket/{bucket_name}")
 async def purge_bucket(
     bucket_name: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Purge alle Dateien eines Buckets aus dem Cache
@@ -150,7 +153,8 @@ async def purge_bucket(
 @router.delete("/purge/all")
 async def purge_all_cache(
     confirm: bool = Query(False, description="Set to true to confirm full cache purge"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     ⚠️ Purge GESAMTEN Cache
@@ -199,7 +203,8 @@ async def purge_all_cache(
 @router.get("/purge/history")
 async def purge_history(
     limit: int = 50,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Historie aller Purge-Operationen
