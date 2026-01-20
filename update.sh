@@ -90,6 +90,9 @@ echo ""
 # STEP 6: Container neu starten
 # ============================================
 echo -e "${YELLOW}[6/6]${NC} Starte Container neu..."
+# Stoppe und entferne alte Container (verhindert ContainerConfig Fehler)
+docker-compose down
+# Starte mit neuen Images
 docker-compose up -d
 echo -e "${GREEN}✓${NC} Container neu gestartet"
 echo ""
