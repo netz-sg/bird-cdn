@@ -2,15 +2,17 @@
 
 ![Bird-CDN Header](https://i.ibb.co/R4dpTg9V/Unbenannt-1.png)
 
-# 🐦 Bird-CDN
+# Bird-CDN
 
-### High-Performance Content Delivery Network with Management Interface
+### Self-Hosted Content Delivery Network for Images & Videos
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://www.docker.com/)
-[![Version](https://img.shields.io/badge/Version-Alpha-red)](https://github.com/netz-sg/cdn-network)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev/)
+[![Version](https://img.shields.io/badge/Version-Beta-orange)](https://github.com/netz-sg/cdn-network)
 
-**⚠️ ALPHA VERSION - This project is currently in active development and may contain bugs or incomplete features. Use in production environments at your own risk.**
+**Status: Beta** - Core features functional, ready for testing environments. Review security checklist before production use.
 
 ---
 
@@ -32,109 +34,168 @@
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [About](#-about)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Quick Start](#-quick-start)
-- [Services](#-services)
-- [API Documentation](#-api-documentation)
-- [Monitoring](#-monitoring)
-- [Configuration](#-configuration)
-- [Production Deployment](#-production-deployment)
-- [Security](#-security)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [About](#about)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [Services](#services)
+- [API Documentation](#api-documentation)
+- [Monitoring](#monitoring)
+- [Video Delivery](#video-delivery)
+- [Configuration](#configuration)
+- [Production Deployment](#production-deployment)
+- [Security](#security)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🌟 About
+## About
 
-**Bird-CDN** is a complete, self-hosted Content Delivery Network solution designed for serving images and videos at scale. Built with modern technologies and best practices, it provides enterprise-grade caching, monitoring, and management capabilities.
+**Bird-CDN** is a self-hosted Content Delivery Network for images and videos. It combines NGINX edge caching with MinIO object storage, providing a complete solution for media delivery with automatic image optimization and a modern admin interface.
 
 ### Key Highlights
 
-- 🚀 **High Performance** - NGINX-powered edge caching with optimized configuration
-- 📦 **S3-Compatible Storage** - MinIO for reliable object storage
-- 🎨 **Modern Admin UI** - React-based dashboard for easy management
-- 📊 **Built-in Monitoring** - Prometheus + Grafana for real-time insights
-- 🔧 **RESTful API** - Complete management API with documentation
-- 🐳 **Docker-First** - Easy deployment and scaling
-- 🆓 **Open Source** - MIT License, free to use and modify
+| Feature | Description |
+|---------|-------------|
+| **NGINX Edge Cache** | 50GB cache, 30-day TTL, 100 req/s rate limit |
+| **Image Processing** | Auto WebP conversion, on-the-fly transforms |
+| **Watermarking** | Configurable logo with position/opacity/scale |
+| **S3 Storage** | MinIO backend, multi-bucket support |
+| **Admin Dashboard** | React UI for uploads, stats, cache management |
+| **Monitoring** | Prometheus metrics, Grafana dashboards |
+| **API Access** | JWT + API Key authentication |
+| **Docker-First** | Single command deployment |
 
 ---
 
-## 🎯 Features
+## Features
 
-### Core Features
+### Core CDN Features
 
-- ✅ **NGINX Edge Cache** - Optimized for images & videos with Range Requests support
-- ✅ **MinIO Origin Storage** - S3-compatible object storage backend
-- ✅ **FastAPI Backend** - Modern REST API for management & cache operations
-- ✅ **React Admin UI** - User-friendly dashboard with real-time statistics
-- ✅ **Prometheus + Grafana** - Comprehensive monitoring & analytics
-- ✅ **Image Transformation API** - On-the-fly resize, crop, and format conversion with intelligent caching
-- ✅ **Video Streaming** - HLS support with adaptive bitrate streaming
-- ✅ **SSL/TLS Support** - Automated Let's Encrypt certificate management
-- ✅ **Cache Management** - Purge by file, bucket, or pattern
-- ✅ **Bandwidth Tracking** - Detailed usage statistics and reports
-- ✅ **WebP Support** - Automatic image format optimization
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **NGINX Edge Cache** | Implemented | 50GB cache, 30d TTL, Rate Limiting (100 req/s) |
+| **MinIO Object Storage** | Implemented | S3-compatible, auto public-read policy |
+| **Image Transform API** | Implemented | On-the-fly resize, crop, format conversion |
+| **Automatic WebP Conversion** | Implemented | All uploaded images converted to WebP |
+| **Watermark System** | Implemented | Configurable logo, position, opacity, scale |
+| **Video Streaming** | Implemented | Range Requests, 206 Partial Content, Slice Module |
+| **Cache Management** | Implemented | Purge single/bucket/pattern/all with history |
+| **SSL/TLS** | Implemented | Let's Encrypt via Certbot |
 
-### Advanced Features
+### Authentication & Security
 
-- 🎬 **Range Requests** - Efficient video seeking
-- 📈 **Real-time Metrics** - Cache hit/miss ratios, bandwidth, requests
-- 🔐 **JWT Authentication** - Secure API and admin access
-- 🌍 **Multi-bucket Support** - Organize content by projects
-- ⚡ **Redis Caching** - Fast metadata and session storage
-- 📝 **Comprehensive Logging** - Detailed request and error logs
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **JWT Authentication** | Implemented | HS256, 24h expiration, role-based |
+| **API Key System** | Implemented | For external apps (PayloadCMS, etc.) |
+| **Password Hashing** | Implemented | Argon2 (no 72-byte limit) |
+| **Rate Limiting** | Implemented | NGINX-level (CDN: 100/s, API: 10/s) |
+
+### Admin Dashboard (React)
+
+| Page | Status | Features |
+|------|--------|----------|
+| **Dashboard** | Implemented | Stats overview, bandwidth chart |
+| **Upload** | Implemented | Multi-file, progress tracking, watermark toggle |
+| **Files** | Implemented | Browse, filter by type/bucket, preview |
+| **Statistics** | Implemented | Bandwidth, top files, cache performance |
+| **Cache** | Implemented | Status, purge operations |
+| **API Keys** | Implemented | Create, list, toggle, delete, test |
+| **Watermark** | Implemented | Upload logo, configure position/opacity |
+| **Settings** | Implemented | Domain config, SSL setup |
+
+### Monitoring & Analytics
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **Prometheus Metrics** | Implemented | HTTP, uploads, auth, storage, cache |
+| **Grafana Dashboards** | Configured | Auto-provisioned, pre-built panels |
+| **NGINX Log Parsing** | Implemented | Automatic aggregation to DB |
+| **Bandwidth Tracking** | Implemented | Hourly aggregation, per-file stats |
+
+### Planned Features (Roadmap)
+
+| Feature | Priority | Status |
+|---------|----------|--------|
+| Signed URLs / Token Auth | High | Planned |
+| Bandwidth Quotas | High | Planned |
+| Video Transcoding (HLS/DASH) | High | Planned |
+| Responsive Image srcset | Medium | Planned |
+| Multi-Location / Geo-Routing | Low | Planned |
+| AVIF Support | Low | Planned |
 
 ---
 
-## 📦 Architecture
+## Architecture
 
 ```
-┌─────────────┐
-│   Clients   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│  NGINX CDN Edge (Port 80/443)      │
-│  - Cache Layer                      │
-│  - SSL Termination                  │
-│  - Load Balancing                   │
-└──────┬──────────────────────────────┘
-       │ (Cache MISS)
-       ▼
-┌─────────────────────────────────────┐
-│  MinIO Origin Storage (Port 9000)  │
-│  - S3-Compatible Object Store       │
-│  - Multi-bucket Support             │
-└─────────────────────────────────────┘
-
-┌─────────────────┐  ┌──────────────┐
-│  Backend API    │──│ PostgreSQL   │
-│  (Port 8000)    │  │ Database     │
-└─────────────────┘  └──────────────┘
-         │
-         ▼
-    ┌────────┐
-    │ Redis  │
-    │ Cache  │
-    └────────┘
-
-┌─────────────────┐  ┌──────────────┐
-│  Admin UI       │  │  Monitoring  │
-│  (Port 3000)    │  │  - Grafana   │
-└─────────────────┘  │  - Prometheus│
-                     └──────────────┘
+                              ┌─────────────────┐
+                              │     Clients     │
+                              └────────┬────────┘
+                                       │
+                              ┌────────▼────────┐
+                              │   NGINX Edge    │
+                              │   Port 80/443   │
+                              │                 │
+                              │ • 50GB Cache    │
+                              │ • Rate Limiting │
+                              │ • SSL/TLS       │
+                              └────────┬────────┘
+                                       │
+           ┌───────────────────────────┼───────────────────────────┐
+           │                           │                           │
+  ┌────────▼────────┐        ┌────────▼────────┐        ┌────────▼────────┐
+  │   Static Files  │        │  Transform API  │        │    Admin UI     │
+  │   (Cache HIT)   │        │  /api/transform │        │   Port 3000     │
+  │                 │        │                 │        │                 │
+  │ Images: 30d TTL │        │ • Resize/Crop   │        │ • React 18      │
+  │ Videos: 7d TTL  │        │ • Format Conv.  │        │ • Dashboard     │
+  └────────┬────────┘        │ • Cached 30d    │        │ • Upload        │
+           │                 └────────┬────────┘        └─────────────────┘
+           │ (Cache MISS)             │
+           │                          │
+  ┌────────▼────────┐        ┌────────▼────────┐
+  │  MinIO Storage  │        │  FastAPI        │
+  │  Port 9010/9011 │◄───────│  Port 8000      │
+  │                 │        │                 │
+  │ • S3 Compatible │        │ • Auth (JWT)    │
+  │ • Multi-Bucket  │        │ • Upload API    │
+  └─────────────────┘        │ • Cache Mgmt    │
+                             └────────┬────────┘
+                                      │
+                    ┌─────────────────┼─────────────────┐
+                    │                 │                 │
+           ┌────────▼────────┐ ┌─────▼─────┐ ┌────────▼────────┐
+           │   PostgreSQL    │ │   Redis   │ │   Prometheus    │
+           │                 │ │           │ │   Port 9090     │
+           │ • Users         │ │ • Cache   │ │                 │
+           │ • Files Meta    │ │ • Session │ │ ┌─────────────┐ │
+           │ • Bandwidth     │ └───────────┘ │ │   Grafana   │ │
+           │ • Cache Stats   │               │ │  Port 3001  │ │
+           └─────────────────┘               │ └─────────────┘ │
+                                             └─────────────────┘
 ```
+
+### Service Overview
+
+| Service | Port | Technology | Purpose |
+|---------|------|------------|---------|
+| nginx-cdn | 80/443 | NGINX 1.25 | Edge cache, SSL, routing |
+| backend-api | 8000 | FastAPI | REST API, business logic |
+| frontend | 3000 | React + Vite | Admin dashboard |
+| origin-storage | 9010/9011 | MinIO | S3-compatible storage |
+| postgres | 5432 | PostgreSQL 16 | Metadata, statistics |
+| redis | 6379 | Redis 7 | Caching, sessions |
+| prometheus | 9090 | Prometheus | Metrics collection |
+| grafana | 3001 | Grafana | Dashboards |
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -180,7 +241,7 @@ curl -I http://localhost/media/image.jpg
 
 ---
 
-## 🌐 Services
+## Services
 
 After starting, the following services are available:
 
@@ -197,60 +258,138 @@ After starting, the following services are available:
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
-Interactive API documentation is available at:
+Interactive documentation available at:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-### Quick API Examples
+### API Endpoints Overview
 
-#### Upload a File
+| Route | Method | Auth | Description |
+|-------|--------|------|-------------|
+| `/api/auth/login` | POST | - | Get JWT token |
+| `/api/auth/api-keys` | POST/GET | JWT | Manage API keys |
+| `/api/upload/multi` | POST | JWT/API Key | Upload files |
+| `/api/files` | GET | JWT | List uploaded files |
+| `/api/transform/{bucket}/{path}` | GET | - | Transform image |
+| `/api/cache/status` | GET | JWT | Cache status |
+| `/api/purge` | DELETE | JWT | Purge cache |
+| `/api/stats/overview` | GET | JWT | Statistics |
+| `/api/watermark/*` | * | Admin | Watermark config |
+
+### Authentication
+
+**Option 1: JWT Token**
 ```bash
-POST /api/upload
-Content-Type: multipart/form-data
+# Login
+curl -X POST http://localhost:8000/api/auth/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin&password=admin123"
 
-curl -X POST http://localhost:8000/api/upload \
+# Use token
+curl http://localhost:8000/api/files \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Option 2: API Key (for external apps)**
+```bash
+# Create API key
+curl -X POST http://localhost:8000/api/auth/api-keys \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -F "file=@image.jpg" \
-  -F "bucket=media"
+  -d '{"name": "PayloadCMS"}'
+
+# Use API key
+curl -X POST http://localhost:8000/api/upload/multi \
+  -H "X-API-Key: cdn_abc123..."
 ```
 
-#### Purge Cache (Single File)
-```bash
-DELETE /api/cache/purge?path=/media/image.jpg
+### Upload Files
 
-curl -X DELETE "http://localhost:8000/api/cache/purge?path=/media/image.jpg" \
+```bash
+# Multi-file upload with watermark
+curl -X POST http://localhost:8000/api/upload/multi \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -F "files=@photo1.jpg" \
+  -F "files=@photo2.png" \
+  -F "bucket=media" \
+  -F "folder=2024/january" \
+  -F "apply_watermark_flag=true"
+```
+
+**Response:**
+```json
+{
+  "results": [{
+    "success": true,
+    "cdn_url": "http://localhost/media/2024/january/20240120_143022_abc123.webp",
+    "transform_urls": {
+      "thumbnail": "/api/transform/...?w=400&h=400&fit=cover",
+      "preview": "/api/transform/...?w=800",
+      "large": "/api/transform/...?w=1600"
+    }
+  }]
+}
+```
+
+### Image Transformation
+
+```bash
+# Resize to width 800
+GET /api/transform/media/image.webp?w=800
+
+# Thumbnail (400x400, center crop)
+GET /api/transform/media/image.webp?w=400&h=400&fit=cover&crop=center
+
+# Convert to JPEG
+GET /api/transform/media/image.webp?format=jpg&quality=75
+```
+
+**Parameters:**
+| Param | Type | Range | Description |
+|-------|------|-------|-------------|
+| w | int | 1-4000 | Target width |
+| h | int | 1-4000 | Target height |
+| fit | enum | contain/cover/fill/inside | Resize mode |
+| crop | enum | center/top/bottom/left/right/entropy | Crop position |
+| format | enum | webp/jpg/png/gif | Output format |
+| quality | int | 1-100 | Compression quality |
+
+### Cache Management
+
+```bash
+# Purge single file
+curl -X DELETE "http://localhost:8000/api/purge?path=/media/image.webp" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Purge bucket
+curl -X DELETE "http://localhost:8000/api/purge/bucket/media" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Purge all
+curl -X DELETE "http://localhost:8000/api/purge/all?confirm=true" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-#### Purge Cache (Entire Bucket)
-```bash
-DELETE /api/cache/purge/bucket/{bucket_name}
+### Statistics
 
-curl -X DELETE http://localhost:8000/api/cache/purge/bucket/media \
+```bash
+# Overview
+curl http://localhost:8000/api/stats/overview \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
 
-#### Get Cache Statistics
-```bash
-GET /api/stats/cache
-
-curl http://localhost:8000/api/stats/cache \
+# Bandwidth (last 7 days)
+curl "http://localhost:8000/api/stats/bandwidth?days=7" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
 
-#### Get Bandwidth Report
-```bash
-GET /api/stats/bandwidth?days=7
-
-curl http://localhost:8000/api/stats/bandwidth?days=7 \
+# Top files
+curl "http://localhost:8000/api/stats/top-files?limit=20" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ---
 
-## 📊 Monitoring
+## Monitoring
 
 ### Grafana Dashboards
 
@@ -261,51 +400,74 @@ Access Grafana at **http://localhost:3001**
 - Password: `admin`
 
 **Pre-configured Dashboards:**
-- 📈 CDN Performance Overview
-- 💾 Cache Hit/Miss Ratios
-- 🌐 Bandwidth Usage
-- 🚀 Request Rates & Latency
-- 💽 Storage Capacity
-- 🖥️ System Health
+- CDN Performance Overview
+- Cache Hit/Miss Ratios
+- Bandwidth Usage
+- Request Rates & Latency
+- Storage Capacity
+- System Health
 
 ### Prometheus Metrics
 
 Access Prometheus at **http://localhost:9090**
 
-**Available Metrics:**
-- `nginx_http_requests_total` - Total HTTP requests
-- `nginx_cache_status` - Cache hit/miss status
-- `bandwidth_bytes_total` - Total bandwidth usage
-- `storage_usage_bytes` - Storage capacity
-- `response_time_seconds` - Request latency
+**Backend Metrics (FastAPI):**
+| Metric | Type | Description |
+|--------|------|-------------|
+| `http_requests_total` | Counter | Total HTTP requests by method/endpoint/status |
+| `http_request_duration_seconds` | Histogram | Request latency |
+| `cdn_uploads_total` | Counter | Uploads by file_type/bucket |
+| `cdn_upload_size_bytes` | Histogram | Upload sizes (1KB-1GB buckets) |
+| `cdn_auth_requests_total` | Counter | Auth attempts by type/status |
+| `cdn_storage_operations_total` | Counter | MinIO operations |
+| `cdn_cache_hits_total` | Counter | Cache hits by type |
+| `cdn_watermark_operations_total` | Counter | Watermark applications |
+
+**NGINX Metrics (via nginx-exporter):**
+| Metric | Description |
+|--------|-------------|
+| `nginx_connections_active` | Active connections |
+| `nginx_http_requests_total` | Total HTTP requests |
 
 ---
 
-## 🎬 Video Optimization
+## Video Delivery
 
-Bird-CDN includes advanced video delivery features:
+### Implemented Features
 
-### Supported Features
-- ✅ **Range Requests** - Efficient video seeking and partial content delivery
-- ✅ **HLS Streaming** - HTTP Live Streaming with M3U8 playlists
-- ✅ **Adaptive Bitrate** - Multiple quality levels
-- ✅ **Slice Uploads** - Handle large video files
-- ✅ **Smart Caching** - Intelligent segment caching
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **Range Requests** | Implemented | 206 Partial Content for seeking |
+| **Slice Module** | Implemented | 1MB chunks for large files |
+| **Video Caching** | Implemented | 7-day TTL for video content |
+| **Format Support** | Implemented | MP4, WebM, AVI, MOV, MKV, FLV, M4V |
 
-### Example: HLS Streaming
+### Video Upload & Access
+
 ```bash
-# Upload video segments
-curl -X POST http://localhost:8000/api/upload \
-  -F "file=@video.m3u8" \
+# Upload video
+curl -X POST http://localhost:8000/api/upload/multi \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -F "files=@video.mp4" \
   -F "bucket=videos"
 
-# Access via CDN
-http://localhost/videos/video.m3u8
+# Access via CDN (supports seeking)
+curl -I http://localhost/videos/video.mp4
+# Returns: Accept-Ranges: bytes
 ```
+
+### Planned Video Features
+
+| Feature | Status |
+|---------|--------|
+| HLS Transcoding | Planned |
+| DASH Support | Planned |
+| Adaptive Bitrate | Planned |
+| Thumbnail Generation | Planned |
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -364,7 +526,7 @@ proxy_busy_buffers_size 128k;
 
 ---
 
-## 🌍 Production Deployment
+## Production Deployment
 
 ### Automated SSL Setup (Recommended)
 
@@ -423,43 +585,78 @@ For multi-region deployments:
 
 ---
 
-## 🔐 Security
+## Security
+
+### Implemented Security Features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| JWT Authentication | Implemented | HS256, 24h expiration |
+| API Key System | Implemented | For external integrations |
+| Password Hashing | Implemented | Argon2 algorithm |
+| Rate Limiting | Implemented | NGINX-level (100/10 req/s) |
+| HTTPS/SSL | Implemented | Let's Encrypt via Certbot |
+
+### Known Limitations (Address Before Production)
+
+| Issue | Risk | Recommendation |
+|-------|------|----------------|
+| CORS allows all origins (`*`) | Medium | Restrict to specific domains |
+| No file content validation | Medium | Add magic bytes check |
+| No login brute-force protection | Medium | Implement account lockout |
+| No per-API-key rate limiting | Low | Add Redis-based limiting |
 
 ### Pre-Deployment Checklist
 
-- [ ] Change all default passwords in `.env`
-- [ ] Generate strong JWT secret keys
-- [ ] Configure SSL/TLS certificates
-- [ ] Set up firewall rules (allow only ports 80, 443)
-- [ ] Rotate MinIO access keys
-- [ ] Enable API rate limiting
-- [ ] Configure admin UI authentication
-- [ ] Set up fail2ban for brute force protection
-- [ ] Enable HSTS headers
-- [ ] Configure CORS policies
+```
+[ ] Change all default passwords:
+    - Admin UI: admin / admin123
+    - MinIO: admin / adminpassword123
+    - Grafana: admin / admin
+    - PostgreSQL: cdn / cdn123
 
-### Security Best Practices
+[ ] Generate secure JWT secret:
+    openssl rand -hex 32
+
+[ ] Configure CORS (backend/main.py):
+    ALLOWED_ORIGINS = ["https://your-domain.com"]
+
+[ ] Enable SSL:
+    docker-compose --profile ssl up -d
+
+[ ] Set firewall rules:
+    - Allow: 80, 443
+    - Block: 8000, 9010, 9011, 3000, 3001, 9090
+
+[ ] Configure backup strategy
+```
+
+### Security Commands
 
 ```bash
 # Generate secure JWT secret
 openssl rand -hex 32
 
-# Change admin password via API
-curl -X PATCH http://localhost:8000/auth/change-password \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+# Change admin password
+curl -X PATCH http://localhost:8000/api/auth/change-password \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"old_password":"admin123","new_password":"your-secure-password"}'
+  -d '{"old_password":"admin123","new_password":"YOUR_SECURE_PASSWORD"}'
 
 # Change admin username
-curl -X PATCH http://localhost:8000/auth/change-username \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+curl -X PATCH http://localhost:8000/api/auth/change-username \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"new_username":"yourusername","password":"your-password"}'
+  -d '{"new_username":"your_username","password":"YOUR_PASSWORD"}'
+
+# Rotate API key
+curl -X DELETE http://localhost:8000/api/auth/api-keys/{key_id} \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### View Logs
 
@@ -512,7 +709,7 @@ sudo chown -R $(whoami):$(whoami) ./storage
 
 ---
 
-## 👥 Contributing
+## Contributing
 
 We welcome contributions! Please follow these steps:
 
@@ -541,7 +738,7 @@ Please include:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
@@ -571,7 +768,7 @@ SOFTWARE.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with amazing open-source technologies:
 - [NGINX](https://nginx.org/) - High-performance web server
@@ -585,18 +782,18 @@ Built with amazing open-source technologies:
 
 ---
 
-## 📞 Support
+## Support
 
-- 📖 [Documentation](https://github.com/netz-sg/cdn-network/wiki)
-- 🐛 [Issue Tracker](https://github.com/netz-sg/cdn-network/issues)
-- 💬 [Discussions](https://github.com/netz-sg/cdn-network/discussions)
+- [Documentation](https://github.com/netz-sg/cdn-network/wiki)
+- [Issue Tracker](https://github.com/netz-sg/cdn-network/issues)
+- [Discussions](https://github.com/netz-sg/cdn-network/discussions)
 
 ---
 
 <div align="center">
 
-**⭐ If you find this project useful, please consider giving it a star! ⭐**
+**If you find this project useful, please consider giving it a star!**
 
-Made with ❤️ by [netz-sg](https://github.com/netz-sg)
+Made by [netz-sg](https://github.com/netz-sg)
 
 </div>
