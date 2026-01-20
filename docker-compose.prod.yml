@@ -1,4 +1,5 @@
-name: cdn-tourdiary
+version: '3.9'
+
 services:
   # NGINX als CDN Edge
   nginx-cdn:
