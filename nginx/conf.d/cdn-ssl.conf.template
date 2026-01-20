@@ -60,7 +60,6 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        rewrite ^/grafana/(.*) /$1 break;
     }
 
     # Prometheus
@@ -70,7 +69,6 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        rewrite ^/prometheus/(.*) /$1 break;
     }
 
     # Image Transformation API (with aggressive caching)
