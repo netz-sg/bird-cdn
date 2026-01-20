@@ -56,8 +56,9 @@ set /p COMMITS_BEHIND=<temp_count.txt
 del temp_count.txt
 
 if "%COMMITS_BEHIND%"=="0" (
-    echo [INFO] System ist bereits auf dem neuesten Stand!
-    exit /b 0
+    echo [INFO] Keine neuen Commits vorhanden
+    echo [WARNUNG] Fahre trotzdem mit Rebuild fort...
+    goto :build
 )
 
 echo [OK] %COMMITS_BEHIND% neue Update(s) gefunden
@@ -73,6 +74,8 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 echo [OK] Updates heruntergeladen
+
+:build
 echo.
 
 REM ============================================

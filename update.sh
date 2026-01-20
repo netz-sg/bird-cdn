@@ -53,19 +53,19 @@ git fetch origin main
 COMMITS_BEHIND=$(git rev-list --count HEAD..origin/main)
 
 if [ "$COMMITS_BEHIND" -eq 0 ]; then
-    echo -e "${GREEN}✓${NC} System ist bereits auf dem neuesten Stand!"
-    exit 0
+    echo -e "${GREEN}✓${NC} Keine neuen Commits vorhanden"
+    echo -e "${YELLOW}⚠${NC} Fahre trotzdem mit Rebuild fort..."
+else
+    echo -e "${GREEN}✓${NC} $COMMITS_BEHIND neue Update(s) gefunden"
+    echo ""
+    echo "Neue Commits:"
+    git log --oneline HEAD..origin/main --pretty=format:"  • %h - %s (%an, %ar)"
+    echo ""
+    echo ""
+    
+    git pull origin main
+    echo -e "${GREEN}✓${NC} Updates heruntergeladen"
 fi
-
-echo -e "${GREEN}✓${NC} $COMMITS_BEHIND neue Update(s) gefunden"
-echo ""
-echo "Neue Commits:"
-git log --oneline HEAD..origin/main --pretty=format:"  • %h - %s (%an, %ar)"
-echo ""
-echo ""
-
-git pull origin main
-echo -e "${GREEN}✓${NC} Updates heruntergeladen"
 echo ""
 
 # ============================================
