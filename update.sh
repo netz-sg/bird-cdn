@@ -72,12 +72,7 @@ echo ""
 # STEP 4: Frontend neu bauen
 # ============================================
 echo -e "${YELLOW}[4/6]${NC} Baue Frontend neu..."
-# Prüfe ob Produktions-Config vorhanden
-if [ -f "docker-compose.prod.yml" ]; then
-    docker-compose -f docker-compose.prod.yml build frontend
-else
-    docker-compose build frontend
-fi
+docker-compose build frontend
 echo -e "${GREEN}✓${NC} Frontend Build abgeschlossen"
 echo ""
 
@@ -85,11 +80,7 @@ echo ""
 # STEP 5: Backend neu bauen
 # ============================================
 echo -e "${YELLOW}[5/6]${NC} Baue Backend neu..."
-if [ -f "docker-compose.prod.yml" ]; then
-    docker-compose -f docker-compose.prod.yml build backend-api
-else
-    docker-compose build backend-api
-fi
+docker-compose build backend-api
 echo -e "${GREEN}✓${NC} Backend Build abgeschlossen"
 echo ""
 
@@ -97,11 +88,7 @@ echo ""
 # STEP 6: Container neu starten
 # ============================================
 echo -e "${YELLOW}[6/6]${NC} Starte Container neu..."
-if [ -f "docker-compose.prod.yml" ]; then
-    docker-compose -f docker-compose.prod.yml up -d
-else
-    docker-compose up -d
-fi
+docker-compose up -d
 echo -e "${GREEN}✓${NC} Container neu gestartet"
 echo ""
 
