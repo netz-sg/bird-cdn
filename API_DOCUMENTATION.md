@@ -1,4 +1,4 @@
-# 🚀 CDN API - Neue Features
+# � Bird-CDN API Documentation
 
 ## Übersicht
 

@@ -1,6 +1,6 @@
-# 🚀 Tour Diary CDN
+# � Bird-CDN
 
-Ein vollständiges CDN-System für Bilder und Videos mit Management-Interface.
+Ein vollständiges Open-Source CDN-System für Bilder und Videos mit Management-Interface.
 
 ## 🎯 Features
 

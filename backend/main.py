@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from config import settings
 from database import engine, Base
-from routers import upload_v2 as upload, cache, stats, admin, purge, auth, watermark, transform
+from routers import upload_v2 as upload, cache, stats, admin, purge, auth, watermark, transform, tracking
 from metrics import PrometheusMiddleware, metrics_endpoint
 
 
@@ -25,8 +25,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="CDN Management API",
-    description="Backend API für Tour Diary CDN - Upload, Cache Management & Analytics",
+    title="Bird-CDN Management API",
+    description="Backend API für Bird-CDN - Upload, Cache Management & Analytics",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -77,6 +77,7 @@ app.include_router(cache.router, prefix="/api/cache", tags=["Cache Management"])
 app.include_router(purge.router, prefix="/api", tags=["Cache Purge"])
 app.include_router(stats.router, prefix="/api/stats", tags=["Statistics"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Administration"])
+app.include_router(tracking.router, prefix="/api/tracking", tags=["Tracking"])
 
 
 # Health Check
@@ -101,7 +102,7 @@ async def metrics():
 @app.get("/", tags=["System"])
 async def root():
     return {
-        "message": "🚀 CDN Management API",
+        "message": "� Bird-CDN Management API",
         "docs": "/docs",
         "health": "/api/health",
         "metrics": "/metrics"
