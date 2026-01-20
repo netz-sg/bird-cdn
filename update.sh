@@ -63,8 +63,10 @@ else
     echo ""
     echo ""
     
-    git pull origin main
-    echo -e "${GREEN}✓${NC} Updates heruntergeladen"
+    # Lokale Änderungen überschreiben (z.B. chmod +x)
+    echo -e "${YELLOW}⚠${NC} Überschreibe lokale Änderungen..."
+    git reset --hard origin/main
+    echo -e "${GREEN}✓${NC} Updates angewendet"
 fi
 echo ""
 
