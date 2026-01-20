@@ -79,8 +79,8 @@ services:
       - MINIO_SECRET_KEY=adminpassword123
       - REDIS_URL=redis://redis:6379
       - NGINX_CACHE_PATH=/var/cache/nginx
-      - CDN_DOMAIN=localhost
-      - CDN_PROTOCOL=http
+      - CDN_DOMAIN=${CDN_DOMAIN:-localhost}
+      - CDN_PROTOCOL=${CDN_PROTOCOL:-http}
     volumes:
       - ./nginx/cache:/var/cache/nginx
       - ./nginx/logs:/var/log/nginx  # Access NGINX logs for aggregation
