@@ -164,14 +164,42 @@ async def get_current_user_or_api_key(
 ):
     """Accept either JWT token or API key"""
     
-    # Try JWT first
+    # Check Authorization: Bearer header first
     if credentials:
-        try:
-            return await get_current_user(credentials, db)
-        except HTTPException:
-            pass
+        token = credentials.credentials
+        
+        # If token starts with 'cdn_', it's an API key
+        if token.startswith('cdn_'):
+            key_obj = db.query(APIKey).filter(
+                APIKey.key == token,
+                APIKey.is_active == True
+            ).first()
+            
+            if key_obj:
+                # Check expiration
+                if key_obj.expires_at and key_obj.expires_at < datetime.now():
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="API key expired"
+                    )
+                
+                # Update last used timestamp
+                key_obj.last_used_at = datetime.now()
+                db.commit()
+                return key_obj
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid API key"
+                )
+        else:
+            # Regular JWT token
+            try:
+                return await get_current_user(credentials, db)
+            except HTTPException:
+                pass
     
-    # Try API key
+    # Try X-API-Key header
     if api_key:
         try:
             return await validate_api_key(api_key, db)

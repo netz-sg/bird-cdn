@@ -5,6 +5,7 @@ from services import minio_client, ensure_bucket_exists
 from models import UploadedFile
 from config import settings
 from url_helpers import build_cdn_url, build_transform_url, get_thumbnail_url
+from auth import get_current_user_or_api_key
 import os
 from datetime import datetime
 from pathlib import Path
@@ -64,7 +65,8 @@ async def upload_file(
     file: UploadFile = File(...),
     bucket: str = Form(default=settings.MINIO_DEFAULT_BUCKET),
     folder: str = Form(default=""),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Upload eine Datei zum Origin Storage (MinIO)
@@ -196,7 +198,8 @@ async def list_files(
     file_type: str = None,
     limit: int = 50,
     offset: int = 0,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Liste aller hochgeladenen Dateien
@@ -244,7 +247,8 @@ async def list_files(
 @router.delete("/files/{file_id}")
 async def delete_file(
     file_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Lösche eine Datei (soft delete)

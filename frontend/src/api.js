@@ -68,4 +68,19 @@ export const listBuckets = () => api.get('/admin/buckets');
 export const createBucket = (name) => api.post(`/admin/buckets?name=${name}`);
 export const getSystemInfo = () => api.get('/admin/system-info');
 
+// API Keys Management
+export const getApiKeys = () => api.get('/auth/api-keys');
+export const createApiKey = (data) => api.post('/auth/api-keys', data);
+export const deleteApiKey = (keyId) => api.delete(`/auth/api-keys/${keyId}`);
+export const toggleApiKey = (keyId) => api.patch(`/auth/api-keys/${keyId}/toggle`);
+export const testApiKey = (apiKey) => {
+  // Test with Authorization: Bearer header (API Keys start with 'cdn_')
+  // Backend recognizes cdn_ prefix as API key, not JWT token
+  return axios.get(`${API_BASE_URL}/stats/overview`, {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`
+    }
+  });
+};
+
 export default api;

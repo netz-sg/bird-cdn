@@ -7,9 +7,9 @@ import {
   BarChart3, 
   Trash2, 
   Settings,
-  FileImage,
   Video,
-  LogOut
+  LogOut,
+  Key
 } from 'lucide-react';
 
 import { useAuth } from './context/AuthContext';
@@ -21,8 +21,8 @@ import FilesPage from './pages/FilesPage';
 import StatsPage from './pages/StatsPage';
 import CachePage from './pages/CachePage';
 import AdminPage from './pages/AdminPage';
-import WatermarkPage from './pages/WatermarkPage';
 import SettingsPage from './pages/SettingsPage';
+import ApiKeysPage from './pages/ApiKeysPage';
 
 const Navigation = () => {
   const location = useLocation();
@@ -34,7 +34,7 @@ const Navigation = () => {
     { path: '/admin/files', icon: Database, label: 'Files' },
     { path: '/admin/stats', icon: BarChart3, label: 'Statistics' },
     { path: '/admin/cache', icon: Trash2, label: 'Cache' },
-    { path: '/admin/watermark', icon: FileImage, label: 'Watermark' },
+    { path: '/admin/api-keys', icon: Key, label: 'API Keys' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' }
   ];
   
@@ -60,7 +60,7 @@ const Navigation = () => {
               display: 'flex',
               alignItems: 'center'
             }}>
-              <FileImage size={24} color="#667eea" />
+              <Video size={24} color="#667eea" />
             </div>
             <div>
               <h1 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold', marginBottom: '2px' }}>
@@ -163,8 +163,8 @@ function App() {
                   <Route path="/upload" element={<UploadPage />} />
                   <Route path="/files" element={<FilesPage />} />
                   <Route path="/stats" element={<StatsPage />} />
-                  <Route path="/watermark" element={<WatermarkPage />} />
                   <Route path="/cache" element={<CachePage />} />
+                  <Route path="/api-keys" element={<ApiKeysPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Routes>
               </div>

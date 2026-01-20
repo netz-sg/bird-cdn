@@ -582,7 +582,7 @@ const Dashboard = () => {
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
           <a
-            href={window.location.hostname === 'localhost' ? 'http://localhost:3001' : '/grafana/'}
+            href="http://localhost:3001"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -617,7 +617,7 @@ const Dashboard = () => {
           </a>
 
           <a
-            href={window.location.hostname === 'localhost' ? 'http://localhost:9090' : '/prometheus/'}
+            href="http://localhost:9090"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -652,7 +652,7 @@ const Dashboard = () => {
           </a>
 
           <a
-            href={window.location.hostname === 'localhost' ? 'http://localhost:9011' : '/minio/'}
+            href="http://localhost:9011"
             target="_blank"
             rel="noopener noreferrer"
             style={{

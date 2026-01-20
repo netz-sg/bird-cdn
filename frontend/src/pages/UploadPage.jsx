@@ -6,7 +6,6 @@ const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [bucket, setBucket] = useState('media');
   const [folder, setFolder] = useState('');
-  const [applyWatermark, setApplyWatermark] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -32,7 +31,6 @@ const UploadPage = () => {
     formData.append('file', file);
     formData.append('bucket', bucket);
     formData.append('folder', folder);
-    formData.append('apply_watermark_flag', applyWatermark ? 'true' : 'false');
 
     try {
       const response = await uploadFile(formData);
@@ -127,30 +125,8 @@ const UploadPage = () => {
               onChange={(e) => setFolder(e.target.value)}
               placeholder="e.g., images/2024"
             />
-          </div>          
-          {/* Watermark Option */}
-          <div style={{ 
-            padding: '12px', 
-            background: '#f3f4f6', 
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}>
-            <input
-              type="checkbox"
-              id="watermark-toggle"
-              checked={applyWatermark}
-              onChange={(e) => setApplyWatermark(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
-            <label 
-              htmlFor="watermark-toggle" 
-              style={{ fontWeight: '500', cursor: 'pointer', userSelect: 'none' }}
-            >
-              🎨 Wasserzeichen hinzufügen
-            </label>
-          </div>        </div>
+          </div>
+        </div>
 
         {/* Upload Button */}
         <button

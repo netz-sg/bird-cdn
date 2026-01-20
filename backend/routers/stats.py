@@ -6,12 +6,16 @@ from models import UploadedFile, CacheEntry, BandwidthLog, CachePurgeLog
 from datetime import datetime, timedelta
 from config import settings
 from pathlib import Path
+from auth import get_current_user_or_api_key
 
 router = APIRouter()
 
 
 @router.get("/overview")
-async def stats_overview(db: Session = Depends(get_db)):
+async def stats_overview(
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
+):
     """
     Gesamtübersicht aller wichtigen Metriken
     """
@@ -79,7 +83,8 @@ async def stats_overview(db: Session = Depends(get_db)):
 @router.get("/bandwidth")
 async def bandwidth_stats(
     days: int = 7,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Bandwidth Statistics für die letzten N Tage
@@ -112,7 +117,8 @@ async def bandwidth_stats(
 @router.get("/top-files")
 async def top_files(
     limit: int = 20,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
 ):
     """
     Top heruntergeladene Dateien
@@ -142,7 +148,10 @@ async def top_files(
 
 
 @router.get("/cache-performance")
-async def cache_performance(db: Session = Depends(get_db)):
+async def cache_performance(
+    db: Session = Depends(get_db),
+    auth = Depends(get_current_user_or_api_key)
+):
     """
     Cache Performance Metriken
     """
