@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Upload as UploadIcon, FileImage, Video, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Upload as UploadIcon, FileImage, Video, CheckCircle, AlertCircle, LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { uploadFile } from '../api';
 
 const UploadPage = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [file, setFile] = useState(null);
   const [bucket, setBucket] = useState('media');
   const [folder, setFolder] = useState('');
@@ -12,6 +15,16 @@ const UploadPage = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [startTime, setStartTime] = useState(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsAuthenticated(false);
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -28,46 +41,71 @@ const UploadPage = () => {
       return;
     }
 
+    // Check authentication before upload
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('You must be logged in to upload files. Redirecting to login...');
+      setTimeout(() => navigate('/login'), 2000);
+      return;
+    }
+
     setUploading(true);
     setError(null);
     setResult(null);
     setUploadProgress(0);
     setUploadSpeed(0);
-    setStartTime(Date.now());
+    const uploadStartTime = Date.now();
+    setStartTime(uploadStartTime);
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('bucket', bucket);
     formData.append('folder', folder);
 
+    console.log('🚀 Starting upload:', {
+      filename: file.name,
+      size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+      bucket,
+      folder
+    });
+
     try {
       const response = await uploadFile(formData, (percent, loaded, total) => {
         setUploadProgress(percent);
         
         // Calculate upload speed
-        const elapsed = (Date.now() - startTime) / 1000; // seconds
+        const elapsed = (Date.now() - uploadStartTime) / 1000; // seconds
         if (elapsed > 0) {
           const speedMBps = (loaded / 1024 / 1024) / elapsed;
           setUploadSpeed(speedMBps);
         }
       });
       
+      console.log('✅ Upload successful:', response.data);
       setResult(response.data);
       setFile(null);
       setUploadProgress(100);
       // Reset file input
       document.getElementById('file-input').value = '';
     } catch (err) {
-      console.error('Upload error:', err);
+      console.error('❌ Upload error:', err);
       let errorMsg = 'Upload failed';
       
       if (err.code === 'ECONNABORTED') {
         errorMsg = 'Upload timeout - file may be too large or connection too slow';
       } else if (err.response) {
-        errorMsg = err.response.data?.detail || `Error: ${err.response.status} ${err.response.statusText}`;
+        console.error('Server response:', err.response);
+        if (err.response.status === 401) {
+          errorMsg = 'Authentication failed - please login again';
+          setTimeout(() => navigate('/login'), 2000);
+        } else {
+          errorMsg = err.response.data?.detail || `Error: ${err.response.status} ${err.response.statusText}`;
+        }
       } else if (err.request) {
+        console.error('No response received:', err.request);
         errorMsg = 'No response from server - check your connection';
       } else {
+        console.error('Request setup error:', err.message);
         errorMsg = err.message || 'Unknown error occurred';
       }
       
@@ -96,6 +134,40 @@ const UploadPage = () => {
           Upload images and videos to your CDN
         </p>
       </div>
+
+      {/* Authentication Warning */}
+      {!isAuthenticated && (
+        <div style={{ 
+          marginBottom: '24px', 
+          padding: '16px', 
+          background: '#fef3c7', 
+          borderRadius: '8px',
+          border: '1px solid #fbbf24',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <LogIn size={24} color="#d97706" />
+          <div>
+            <p style={{ color: '#92400e', fontWeight: '600', marginBottom: '4px' }}>
+              Authentication Required
+            </p>
+            <p style={{ color: '#78350f', fontSize: '14px' }}>
+              You must be logged in to upload files.{' '}
+              <a 
+                href="/login" 
+                style={{ 
+                  color: '#d97706', 
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
+                }}
+              >
+                Click here to login
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         {/* File Selector */}
