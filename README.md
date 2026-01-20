@@ -553,10 +553,14 @@ chmod +x start-with-ssl.sh
 
 ### Manual SSL Setup
 
-See detailed guides:
-- [AUTO_SSL_SETUP.md](AUTO_SSL_SETUP.md) - Automated setup (recommended)
-- [SSL_QUICKSTART.md](SSL_QUICKSTART.md) - Quick reference
-- [SSL_SETUP.md](SSL_SETUP.md) - Manual setup with troubleshooting
+For manual SSL configuration, use Certbot directly:
+```bash
+# Request certificate
+docker-compose --profile ssl up -d certbot
+
+# Verify certificate
+docker-compose exec certbot certbot certificates
+```
 
 ### Production Recommendations
 
@@ -784,7 +788,6 @@ Built with amazing open-source technologies:
 
 ## Support
 
-- [Documentation](https://github.com/netz-sg/cdn-network/wiki)
 - [Issue Tracker](https://github.com/netz-sg/cdn-network/issues)
 - [Discussions](https://github.com/netz-sg/cdn-network/discussions)
 
